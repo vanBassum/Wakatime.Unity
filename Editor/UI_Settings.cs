@@ -25,6 +25,7 @@ namespace WakaTime
             enabled = Settings.Enabled;
             apiKey = Settings.ApiKey;
             projectName = Settings.ProjectName;
+            logLevel = Settings.LogLevel;
         }
 
 
@@ -52,6 +53,7 @@ namespace WakaTime
             {
                 Settings.Enabled = enabled;
                 Settings.ApiKey = apiKey;
+                Settings.LogLevel = logLevel;
                 //Settings.ProjectName = projectName;
                 Plugin.Initialize();
                 this.Close();

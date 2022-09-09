@@ -19,11 +19,11 @@ namespace WakaTime
         public static void Initialize()
         {
             Manager?.Dispose();
-
+            Logger?.Dispose();
             try
             {
                 Logger = new Logger("Wakatime", Settings.LogLevel);
-                Logger.Log(Logger.Levels.Informational, "Plugin initializing");
+                Logger.Log(Logger.Levels.Informational, $"Plugin starting for project '{Settings.ProjectName}'");
                 Manager = new WakatimeManager(
                     Logger,
                     Settings.Enabled,

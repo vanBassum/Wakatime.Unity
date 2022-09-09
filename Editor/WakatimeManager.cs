@@ -61,8 +61,8 @@ namespace WakaTime
 
         private async void SendTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
-            Logger.Log(Logger.Levels.Debug, "Send timer elapsed");
             SendTimer.Stop();
+            Logger.Log(Logger.Levels.Debug, "Send timer elapsed");
             await SendQeueuAsync();
             SendTimer.Start();
         }
@@ -135,6 +135,7 @@ namespace WakaTime
         public void Dispose()
         {
             HeartbeatCollector.Dispose();
+            SendTimer.Dispose();
             Logger.Log(Logger.Levels.Warning, "Plugin stopped");
         }
     }

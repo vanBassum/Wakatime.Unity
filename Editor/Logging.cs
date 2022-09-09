@@ -1,10 +1,11 @@
 ﻿#if (UNITY_EDITOR)
+using System;
 using System.Runtime.CompilerServices;
 using UnityEngine;
 
 namespace WakaTime
 {
-    public class Logger
+    public class Logger : IDisposable
     {
         public string Title { get; set; }
         public Levels LogLevel { get; set; }
@@ -39,6 +40,10 @@ namespace WakaTime
             }
         }
 
+        public void Dispose()
+        {
+
+        }
 
         public enum Levels
         {
