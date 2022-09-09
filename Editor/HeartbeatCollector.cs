@@ -99,7 +99,8 @@ namespace WakaTime
 
             Heartbeat heartbeat = new Heartbeat(entity, type);
             heartbeat.project = ProjectName;
-            heartbeat.language = "unity";
+            heartbeat.language = "Unity";
+            heartbeat.os = SystemInfo.operatingSystemFamily.ToString();
             return heartbeat;
         }
 

@@ -34,6 +34,10 @@ namespace WakaTime
         //public int cursorpos;
         /// <summary>whether this heartbeat was triggered from writing to a file (optional)</summary>
         public bool is_write;
+        /// <summary>
+        /// The os currently working on
+        /// </summary>
+        public string os;
 
         public Heartbeat(string entity, string type)
         {
