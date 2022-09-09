@@ -10,7 +10,8 @@ I've tried this existing solution (https://github.com/vladfaust/unity-wakatime) 
 ## A list of things todo
 
  - [ ] Add setup instructions
-	 - [ ] Support Unity package manager
+	 - [x] Support Unity package manager
+	 - [ ] Add manual
  - [x] Add console logging
  - [x] Catch events and create heartbeats
  - [x] Send heartbeats async to wakatime
