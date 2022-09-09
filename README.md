@@ -26,3 +26,4 @@ I've tried this existing solution (https://github.com/vladfaust/unity-wakatime) 
  - [x] Add info to heartbeat
 	 - [x] Git branching info
 	 - [x] Current OS
+	 - [ ] Editor information.
