@@ -20,8 +20,7 @@ namespace WakaTime
 
         public static string ProjectName
         {
-            get => EditorPrefs.GetString("WakaTime/Project/Name", Application.productName);
-            set => EditorPrefs.SetString("WakaTime/Project/Name", value);
+            get => Application.productName;
         }
 
         public static Logger.Levels LogLevel

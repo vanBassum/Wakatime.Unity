@@ -15,7 +15,7 @@ namespace WakaTime
         [MenuItem("Window/vanbassum/WakaTime")]
         static void Init()
         {
-            UI_Settings window = (UI_Settings)GetWindow(typeof(UI_Settings), false, Settings.ProjectName);
+            UI_Settings window = (UI_Settings)GetWindow(typeof(UI_Settings), false, "Wakatime settings");
             window.LoadSettings();
             window.Show();
         }
@@ -31,7 +31,7 @@ namespace WakaTime
         void OnGUI()
         {
             enabled = EditorGUILayout.Toggle("Enable WakaTime", enabled);
-            projectName = EditorGUILayout.TextField("Project name", projectName);
+            //projectName = EditorGUILayout.TextField("Project name", projectName);
             logLevel = (Logger.Levels)EditorGUILayout.EnumPopup("Log level", logLevel);
 
             EditorGUILayout.BeginHorizontal();
@@ -52,7 +52,7 @@ namespace WakaTime
             {
                 Settings.Enabled = enabled;
                 Settings.ApiKey = apiKey;
-                Settings.ProjectName = projectName;
+                //Settings.ProjectName = projectName;
                 Plugin.Initialize();
                 this.Close();
             }
