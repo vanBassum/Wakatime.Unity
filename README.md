@@ -8,16 +8,15 @@ I've tried this existing solution (https://github.com/vladfaust/unity-wakatime) 
 
  - [ ] Add setup instructions
 	 - [ ] Support Unity package manager
- - [ ] Add basic features list
- - [ ] Add console logging
- - [ ] Catch events and create heartbeats
- - [ ] Send heartbeats async to wakatime
-	 - [ ] Implement heartbeat call
-	 - [ ] Implement heartbeat bulk call
-	 - [ ] Implement cooldown technique
-	 - [ ] Handle http status codes
- - [ ] Improve settings UI
-	 - [ ] Add setting, logging niveau
-	 - [ ] Add button to open dashboard
-	 - [ ] Add button to open ApiKey page
+ - [x] Add console logging
+ - [x] Catch events and create heartbeats
+ - [x] Send heartbeats async to wakatime
+	 - [x] Implement heartbeat call
+	 - [x] Implement heartbeat bulk call
+	 - [x] Implement cooldown technique
+	 - [x] Handle http status codes
+ - [x] Improve settings UI
+	 - [x] Add setting, logging niveau
+	 - [x] Add button to open dashboard
+	 - [x] Add button to open ApiKey page
  - [ ] Add git info to heartbeat
