@@ -10,7 +10,7 @@ namespace WakaTime
     /// <summary>
     /// Catches the events and creates heartbeats
     /// </summary>
-    public class HeartbeatCollector
+    public class HeartbeatCollector : IDisposable
     {
         private string ProjectName { get; }
         public event EventHandler<Heartbeat> OnHeartbeat;
@@ -26,6 +26,17 @@ namespace WakaTime
             EditorSceneManager.sceneOpened += EditorSceneManager_sceneOpened;
             EditorSceneManager.sceneClosing += EditorSceneManager_sceneClosing;
             EditorSceneManager.newSceneCreated += EditorSceneManager_newSceneCreated;
+        }
+
+        public void Dispose()
+        {
+            EditorApplication.playModeStateChanged -= EditorApplication_playModeStateChanged;
+            EditorApplication.contextualPropertyMenu -= EditorApplication_contextualPropertyMenu;
+            EditorApplication.hierarchyChanged -= EditorApplication_hierarchyChanged;
+            EditorSceneManager.sceneSaved -= EditorSceneManager_sceneSaved;
+            EditorSceneManager.sceneOpened -= EditorSceneManager_sceneOpened;
+            EditorSceneManager.sceneClosing -= EditorSceneManager_sceneClosing;
+            EditorSceneManager.newSceneCreated -= EditorSceneManager_newSceneCreated;
         }
 
         private void EditorApplication_contextualPropertyMenu(GenericMenu menu, SerializedProperty property)
@@ -91,6 +102,8 @@ namespace WakaTime
             heartbeat.language = "unity";
             return heartbeat;
         }
+
+        
     }
 }
 

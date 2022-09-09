@@ -10,7 +10,7 @@ using System.Timers;
 
 namespace WakaTime
 {
-    public class WakatimeManager
+    public class WakatimeManager : IDisposable
     {
         private int SendInterval => 1000; //Maximum interval 1 second. Wakatime docs ask for max 10 requests per second.
         private Timer SendTimer { get; }
@@ -55,6 +55,7 @@ namespace WakaTime
             SendTimer = new Timer();
             SendTimer.Interval = SendInterval;
             SendTimer.Elapsed += SendTimer_Elapsed;
+            SendTimer.AutoReset = true;
             SendTimer.Start();
         }
 
@@ -83,14 +84,14 @@ namespace WakaTime
                 heartbeats.Add(HeartbeatQueue.Dequeue());
             }
 
+            if (heartbeats.Count == 0)
+                return;
+
             if (heartbeats.Count == 1)
-            {
                 response = await Client.SendHeartbeat(heartbeats.First());
-            }
-            else if (HeartbeatQueue.Count > 1)
-            {
-                response = await Client.SendHeartbeats(heartbeats.ToArray());
-            }
+       
+            if (heartbeats.Count > 1)
+                response = await Client.SendHeartbeats(heartbeats);
 
             bool success = HandleResponseCodes(response);
 
@@ -116,6 +117,7 @@ namespace WakaTime
         {
             switch (response?.StatusCode)
             {
+                case HttpStatusCode.Accepted:
                 case HttpStatusCode.Created:
                     return true;
 
@@ -125,9 +127,15 @@ namespace WakaTime
                     return false;
 
                 default:
-                    Logger.Log(Logger.Levels.Warning, $"Response error {response?.StatusCode.ToString() ?? "N/A"}: {response.error}");
+                    Logger.Log(Logger.Levels.Warning, $"Response error {response?.StatusCode.ToString()}: {response?.error}");
                     return false;
             }
+        }
+
+        public void Dispose()
+        {
+            HeartbeatCollector.Dispose();
+            Logger.Log(Logger.Levels.Warning, "Plugin stopped");
         }
     }
 }
