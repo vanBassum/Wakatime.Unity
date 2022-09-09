@@ -19,10 +19,19 @@ namespace WakaTime
             ApiUri = apiUri;
         }
 
-        public async Task<Response<HeartbeatResponse>> SendHearthbeat(Heartbeat heartbeat)
+        public async Task<Response<HeartbeatResponse>> SendHeartbeat(Heartbeat heartbeat)
         {
             return await Post<HeartbeatResponse, Heartbeat>("users/current/heartbeats", heartbeat);
         }
+
+        public async Task<Response<HeartbeatResponse>> SendHeartbeats(Heartbeat[] heartbeats)
+        {
+            //Wakatime docs say, max 25 per request
+            if (heartbeats.Length > 25)
+                return new Response<HeartbeatResponse>() { StatusCode = HttpStatusCode.BadRequest };
+            return await Post<HeartbeatResponse, Heartbeat[]>("users/current/heartbeats.bulk", heartbeats);
+        }
+
 
         public async Task<Response<Tres>> Post<Tres, Treq>(string path, Treq heartbeat)
         {

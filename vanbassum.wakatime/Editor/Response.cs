@@ -7,7 +7,7 @@ namespace WakaTime
 {
 
     [Serializable]
-    public struct Response<T>
+    public class Response<T>
     {
         public HttpStatusCode StatusCode { get; set; }
         public string error;

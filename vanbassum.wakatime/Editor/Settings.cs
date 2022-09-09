@@ -24,6 +24,12 @@ namespace WakaTime
             set => EditorPrefs.SetString("WakaTime/Project/Name", value);
         }
 
+        public static Logger.Levels LogLevel
+        {
+            get => (Logger.Levels)EditorPrefs.GetInt("WakaTime/LogLevel", (int)Logger.Levels.Informational);
+            set => EditorPrefs.SetInt("WakaTime/LogLevel", (int)value);
+        }
+
         public static string ApiUri => "https://api.wakatime.com/api/v1/";
 
     }
