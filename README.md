@@ -20,3 +20,4 @@ I've tried this existing solution (https://github.com/vladfaust/unity-wakatime) 
 	 - [ ] Add setting, logging niveau
 	 - [ ] Add button to open dashboard
 	 - [ ] Add button to open ApiKey page
+ - [ ] Add git info to heartbeat
