@@ -1,0 +1,15 @@
+{
+  "name": "vanbassum.wakatime",
+  "displayName": "WakaTime",
+  "version": "0.1.0",
+  "unity": "2020.1",
+  "description": "WakaTime plugin for Unity",
+  "keywords": [
+    "unity",
+    "wakatime",
+    "stats",
+    "tracker",
+    "programming"
+  ],
+  "category": "Productivity"
+}
