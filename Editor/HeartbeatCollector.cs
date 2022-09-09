@@ -1,6 +1,7 @@
 ﻿#if (UNITY_EDITOR)
 
 using System;
+using System.Diagnostics;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -101,9 +102,37 @@ namespace WakaTime
             heartbeat.project = ProjectName;
             heartbeat.language = "Unity";
             heartbeat.os = SystemInfo.operatingSystemFamily.ToString();
+            heartbeat.branch = GetBranchName(Application.dataPath);
             return heartbeat;
         }
 
+        private string GetBranchName(string workingDir)
+        {
+            try
+            {
+                ProcessStartInfo startInfo = new ProcessStartInfo("git"); //No .exe, I assume this work on linux and macos.
+
+                startInfo.UseShellExecute = false;
+                startInfo.WorkingDirectory = workingDir;
+                startInfo.RedirectStandardInput = true;
+                startInfo.RedirectStandardOutput = true;
+                startInfo.Arguments = "rev-parse --abbrev-ref HEAD";
+
+                using Process process = new Process();
+                process.StartInfo = startInfo;
+                process.Start();
+
+                string branchname = process.StandardOutput.ReadLine();
+                return branchname;
+            }
+            catch(Exception ex)
+            {
+                //Todo, figure out if git exists on this machine.
+                //Also, figure out if this is even a git repo.
+                Logger.Log(Logger.Levels.Warning, "Couln't determine branchname, is git installed?");
+            }
+            return null;
+        }
         
     }
 }

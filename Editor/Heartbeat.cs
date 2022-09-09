@@ -21,7 +21,7 @@ namespace WakaTime
         /// <summary>project name (optional)</summary>
         public string project;
         /// <summary>branch name (optional)</summary>
-        //public string branch;
+        public string branch;
         /// <summary>language name (optional)</summary>
         public string language;
         /// <summary>comma separated list of dependencies detected from entity file (optional)</summary>
@@ -34,9 +34,7 @@ namespace WakaTime
         //public int cursorpos;
         /// <summary>whether this heartbeat was triggered from writing to a file (optional)</summary>
         public bool is_write;
-        /// <summary>
-        /// The os currently working on
-        /// </summary>
+        /// <summary>The os currently working on</summary>
         public string os;
 
         public Heartbeat(string entity, string type)
