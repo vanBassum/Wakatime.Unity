@@ -12,9 +12,9 @@ Open your unity project and navigate to Window -> Package Manager. Click on the 
 
 ## A list of things todo
 
- - [ ] Add setup instructions
+ - [x] Add setup instructions
 	 - [x] Support Unity package manager
-	 - [ ] Add manual
+	 - [x] Add getting started
  - [x] Add console logging
  - [x] Catch events and create heartbeats
  - [x] Send heartbeats async to wakatime
