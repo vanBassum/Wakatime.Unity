@@ -1,16 +1,18 @@
 ﻿#if (UNITY_EDITOR)
-using Newtonsoft.Json;
+using Unity.Plastic.Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEngine.Networking;
 
 namespace WakaTime
 {
     public class WakatimeApiClient
     {
+        private static readonly HttpClient client = new HttpClient();
         private string ApiKey { get; }
         private string ApiUri { get; }
 
@@ -37,7 +39,8 @@ namespace WakaTime
         public async Task<Response<Tres>> Post<Tres, Treq>(string path, Treq heartbeat)
         {
             string endpoint = ApiUri + $"{path}?api_key={ApiKey}";
-            using HttpClient client = new HttpClient();
+            client.DefaultRequestHeaders.Accept.Clear();
+            client.DefaultRequestHeaders.Add("User-Agent", "WakaTime.Unity");
             var jsonMessage = JsonConvert.SerializeObject(heartbeat);
             var requestMessage = new HttpRequestMessage(HttpMethod.Post, endpoint);
             requestMessage.Content = new StringContent(jsonMessage, Encoding.UTF8, "application/json");
