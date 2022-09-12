@@ -29,4 +29,4 @@ Open your unity project and navigate to Window -> Package Manager. Click on the 
  - [x] Add info to heartbeat
 	 - [x] Git branching info
 	 - [x] Current OS
-	 - [ ] Editor information.
+	 - [x] Editor information.
