@@ -1,4 +1,5 @@
 ﻿#if (UNITY_EDITOR)
+using System;
 using UnityEditor;
 using UnityEngine;
 
@@ -30,6 +31,8 @@ namespace WakaTime
         }
 
         public static string ApiUri => "https://api.wakatime.com/api/v1/";
+
+        public static TimeSpan SameFileTimeout => TimeSpan.FromMinutes(2);
 
     }
 }

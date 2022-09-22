@@ -1,7 +1,9 @@
 ﻿#if (UNITY_EDITOR)
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Timers;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -16,6 +18,10 @@ namespace WakaTime
         private string ProjectName { get; }
         public event EventHandler<Heartbeat> OnHeartbeat;
         private Logger Logger { get; }
+
+        Dictionary<string, DateTime> heartbeatHistory = new Dictionary<string, DateTime>();
+        
+
         public HeartbeatCollector(Logger logger, string projectName)
         {
             Logger = logger;
@@ -40,32 +46,44 @@ namespace WakaTime
             EditorSceneManager.newSceneCreated -= EditorSceneManager_newSceneCreated;
         }
 
+        private void ThrowHeartbeat(Heartbeat heartbeat)
+        {
+            if(heartbeatHistory.TryGetValue(heartbeat.entity, out DateTime value))
+            {
+                if ((DateTime.Now - value) < Settings.SameFileTimeout)
+                    return;//Don't spam endpoint with same file 
+            }
+            heartbeatHistory[heartbeat.entity] = DateTime.Now;
+            OnHeartbeat?.Invoke(this, heartbeat);
+        }
+
+
         private void EditorApplication_contextualPropertyMenu(GenericMenu menu, SerializedProperty property)
         {
             Logger.Log(Logger.Levels.Debug, "Created heartbeat");
             var heartbeat = CreateHeartbeat();
-            OnHeartbeat?.Invoke(this, heartbeat);
+            ThrowHeartbeat(heartbeat);
         }
 
         private void EditorSceneManager_newSceneCreated(UnityEngine.SceneManagement.Scene scene, NewSceneSetup setup, NewSceneMode mode)
         {
             Logger.Log(Logger.Levels.Debug, "Created heartbeat");
             var heartbeat = CreateHeartbeat();
-            OnHeartbeat?.Invoke(this, heartbeat);
+            ThrowHeartbeat(heartbeat);
         }
 
         private void EditorSceneManager_sceneClosing(UnityEngine.SceneManagement.Scene scene, bool removingScene)
         {
             Logger.Log(Logger.Levels.Debug, "Created heartbeat");
             var heartbeat = CreateHeartbeat();
-            OnHeartbeat?.Invoke(this, heartbeat);
+            ThrowHeartbeat(heartbeat);
         }
 
         private void EditorSceneManager_sceneOpened(UnityEngine.SceneManagement.Scene scene, OpenSceneMode mode)
         {
             Logger.Log(Logger.Levels.Debug, "Created heartbeat");
             var heartbeat = CreateHeartbeat();
-            OnHeartbeat?.Invoke(this, heartbeat);
+            ThrowHeartbeat(heartbeat);
         }
 
         private void EditorSceneManager_sceneSaved(UnityEngine.SceneManagement.Scene scene)
@@ -73,21 +91,21 @@ namespace WakaTime
             Logger.Log(Logger.Levels.Debug, "Created heartbeat");
             var heartbeat = CreateHeartbeat();
             heartbeat.is_write = true;
-            OnHeartbeat?.Invoke(this, heartbeat);
+            ThrowHeartbeat(heartbeat);
         }
 
         private void EditorApplication_hierarchyChanged()
         {
             Logger.Log(Logger.Levels.Debug, "Created heartbeat");
             var heartbeat = CreateHeartbeat();
-            OnHeartbeat?.Invoke(this, heartbeat);
+            ThrowHeartbeat(heartbeat);
         }
 
         private void EditorApplication_playModeStateChanged(PlayModeStateChange obj)
         {
             Logger.Log(Logger.Levels.Debug, "Created heartbeat");
             var heartbeat = CreateHeartbeat();
-            OnHeartbeat?.Invoke(this, heartbeat);
+            ThrowHeartbeat(heartbeat);
         }
 
         private Heartbeat CreateHeartbeat()

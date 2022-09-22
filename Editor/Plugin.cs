@@ -23,7 +23,7 @@ namespace WakaTime
             try
             {
                 Logger = new Logger("Wakatime", Settings.LogLevel);
-                Logger.Log(Logger.Levels.Informational, $"Plugin starting for project '{Settings.ProjectName}'");
+                Logger.Log(Logger.Levels.Notice, $"Plugin starting for project '{Settings.ProjectName}'");
                 Manager = new WakatimeManager(
                     Logger,
                     Settings.Enabled,
