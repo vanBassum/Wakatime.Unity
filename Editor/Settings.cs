@@ -26,7 +26,7 @@ namespace WakaTime
 
         public static Logger.Levels LogLevel
         {
-            get => (Logger.Levels)EditorPrefs.GetInt("WakaTime/LogLevel", (int)Logger.Levels.Informational);
+            get => (Logger.Levels)EditorPrefs.GetInt("WakaTime/LogLevel", (int)Logger.Levels.Notice);
             set => EditorPrefs.SetInt("WakaTime/LogLevel", (int)value);
         }
 
