@@ -134,8 +134,8 @@ namespace WakaTime
 
         public void Dispose()
         {
-            HeartbeatCollector.Dispose();
-            SendTimer.Dispose();
+            HeartbeatCollector?.Dispose();
+            SendTimer?.Dispose();
             Logger.Log(Logger.Levels.Warning, "Plugin stopped");
         }
     }
