@@ -7,6 +7,8 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine.Networking;
+using UnityEngine;
+using System.Net.Http.Headers;
 
 namespace WakaTime
 {
@@ -20,6 +22,13 @@ namespace WakaTime
         {
             ApiKey = apiKey;
             ApiUri = apiUri;
+
+            var os = SystemInfo.operatingSystemFamily.ToString();
+
+            var userAgent = $"UnityPlayer/{Application.unityVersion} ({os}) unity/1.0 unity-wakatime/1.0.0";
+            client.DefaultRequestHeaders.Accept.Clear();
+            client.DefaultRequestHeaders.UserAgent.Clear();
+            client.DefaultRequestHeaders.UserAgent.ParseAdd(userAgent);
         }
 
         public async Task<Response<HeartbeatResponse>> SendHeartbeat(Heartbeat heartbeat)
@@ -38,9 +47,7 @@ namespace WakaTime
 
         public async Task<Response<Tres>> Post<Tres, Treq>(string path, Treq heartbeat)
         {
-            string endpoint = ApiUri + $"{path}?api_key={ApiKey}";
-            client.DefaultRequestHeaders.Accept.Clear();
-            client.DefaultRequestHeaders.Add("User-Agent", "WakaTime.Unity");
+            string endpoint = ApiUri + $"{path}?api_key={ApiKey}";                
             var jsonMessage = JsonConvert.SerializeObject(heartbeat);
             var requestMessage = new HttpRequestMessage(HttpMethod.Post, endpoint);
             requestMessage.Content = new StringContent(jsonMessage, Encoding.UTF8, "application/json");

@@ -34,24 +34,14 @@ namespace WakaTime
         //public int cursorpos;
         /// <summary>whether this heartbeat was triggered from writing to a file (optional)</summary>
         public bool is_write;
-
         #endregion
 
-        #region Undocumented
-
-        /// <summary>The os currently working on</summary>
-        public string os;
-        /// <summary>Name of the plugin used</summary>
-        public string plugin;
-
-        #endregion
 
         public Heartbeat(string entity, string type)
         {
             this.entity = entity;
             this.type = type;
             this.time = DateTime.Now.ToUnixTimeFloat();
-            plugin = "WakaTime.Unity";
         }
     }
 }

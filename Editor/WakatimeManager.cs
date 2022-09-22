@@ -62,7 +62,7 @@ namespace WakaTime
         private async void SendTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
             SendTimer.Stop();
-            Logger.Log(Logger.Levels.Debug, "Send timer elapsed");
+            //Logger.Log(Logger.Levels.Debug, "Send timer elapsed");
             await SendQeueuAsync();
             SendTimer.Start();
         }

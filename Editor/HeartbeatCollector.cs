@@ -101,7 +101,6 @@ namespace WakaTime
             Heartbeat heartbeat = new Heartbeat(entity, type);
             heartbeat.project = ProjectName;
             heartbeat.language = "Unity";
-            heartbeat.os = SystemInfo.operatingSystemFamily.ToString();
             heartbeat.branch = GetBranchName(Application.dataPath);
             return heartbeat;
         }
