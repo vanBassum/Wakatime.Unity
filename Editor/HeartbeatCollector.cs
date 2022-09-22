@@ -46,77 +46,106 @@ namespace WakaTime
             EditorSceneManager.newSceneCreated -= EditorSceneManager_newSceneCreated;
         }
 
-        private void ThrowHeartbeat(Heartbeat heartbeat)
+        private bool CheckEntityTimeout(string entity)
         {
-            if(heartbeatHistory.TryGetValue(heartbeat.entity, out DateTime value))
+            if (heartbeatHistory.TryGetValue(entity, out DateTime value))
             {
                 if ((DateTime.Now - value) < Settings.SameFileTimeout)
-                    return;//Don't spam endpoint with same file 
+                    return false;
             }
-            heartbeatHistory[heartbeat.entity] = DateTime.Now;
+            heartbeatHistory[entity] = DateTime.Now;
+            return true;
+        }
+
+        private void ThrowHeartbeat(Heartbeat heartbeat)
+        {
             OnHeartbeat?.Invoke(this, heartbeat);
         }
 
+        private string GetEntity(UnityEngine.SceneManagement.Scene? scene = null)
+        {
+            scene ??= EditorSceneManager.GetActiveScene();
+            var currentScene = scene?.path;
+            string entity = "Unsaved Scene";
+            if (!string.IsNullOrEmpty(currentScene))
+                entity = Application.dataPath + "/" + currentScene.Substring("Assets/".Length);
+            return entity;
+        }
 
         private void EditorApplication_contextualPropertyMenu(GenericMenu menu, SerializedProperty property)
         {
-            Logger.Log(Logger.Levels.Debug, "Created heartbeat");
-            var heartbeat = CreateHeartbeat();
-            ThrowHeartbeat(heartbeat);
+            var entity = GetEntity();
+            if(CheckEntityTimeout(entity))
+            {
+                var heartbeat = CreateHeartbeat(entity);
+                ThrowHeartbeat(heartbeat);
+            }
         }
 
         private void EditorSceneManager_newSceneCreated(UnityEngine.SceneManagement.Scene scene, NewSceneSetup setup, NewSceneMode mode)
         {
-            Logger.Log(Logger.Levels.Debug, "Created heartbeat");
-            var heartbeat = CreateHeartbeat();
-            ThrowHeartbeat(heartbeat);
+            var entity = GetEntity(scene);
+            if (CheckEntityTimeout(entity))
+            {
+                var heartbeat = CreateHeartbeat(entity);
+                ThrowHeartbeat(heartbeat);
+            }
         }
 
         private void EditorSceneManager_sceneClosing(UnityEngine.SceneManagement.Scene scene, bool removingScene)
         {
-            Logger.Log(Logger.Levels.Debug, "Created heartbeat");
-            var heartbeat = CreateHeartbeat();
-            ThrowHeartbeat(heartbeat);
+            var entity = GetEntity(scene);
+            if (CheckEntityTimeout(entity))
+            {
+                var heartbeat = CreateHeartbeat(entity);
+                ThrowHeartbeat(heartbeat);
+            }
         }
 
         private void EditorSceneManager_sceneOpened(UnityEngine.SceneManagement.Scene scene, OpenSceneMode mode)
         {
-            Logger.Log(Logger.Levels.Debug, "Created heartbeat");
-            var heartbeat = CreateHeartbeat();
-            ThrowHeartbeat(heartbeat);
+            var entity = GetEntity(scene);
+            if (CheckEntityTimeout(entity))
+            {
+                var heartbeat = CreateHeartbeat(entity);
+                ThrowHeartbeat(heartbeat);
+            }
         }
 
         private void EditorSceneManager_sceneSaved(UnityEngine.SceneManagement.Scene scene)
         {
-            Logger.Log(Logger.Levels.Debug, "Created heartbeat");
-            var heartbeat = CreateHeartbeat();
-            heartbeat.is_write = true;
-            ThrowHeartbeat(heartbeat);
+            var entity = GetEntity(scene);
+            if (CheckEntityTimeout(entity))
+            {
+                var heartbeat = CreateHeartbeat(entity);
+                heartbeat.is_write = true;
+                ThrowHeartbeat(heartbeat);
+            }
         }
 
         private void EditorApplication_hierarchyChanged()
         {
-            Logger.Log(Logger.Levels.Debug, "Created heartbeat");
-            var heartbeat = CreateHeartbeat();
-            ThrowHeartbeat(heartbeat);
+            var entity = GetEntity();
+            if (CheckEntityTimeout(entity))
+            {
+                var heartbeat = CreateHeartbeat(entity);
+                ThrowHeartbeat(heartbeat);
+            }
         }
 
         private void EditorApplication_playModeStateChanged(PlayModeStateChange obj)
         {
-            Logger.Log(Logger.Levels.Debug, "Created heartbeat");
-            var heartbeat = CreateHeartbeat();
-            ThrowHeartbeat(heartbeat);
+            var entity = GetEntity();
+            if (CheckEntityTimeout(entity))
+            {
+                var heartbeat = CreateHeartbeat(entity);
+                ThrowHeartbeat(heartbeat);
+            }
         }
 
-        private Heartbeat CreateHeartbeat()
+        private Heartbeat CreateHeartbeat(string entity)
         {
-            var currentScene = EditorSceneManager.GetActiveScene().path;
-            string entity = "Unsaved Scene";
-            if (!string.IsNullOrEmpty(currentScene))
-                entity = Application.dataPath + "/" + currentScene.Substring("Assets/".Length);
-            string type = "file";
-
-            Heartbeat heartbeat = new Heartbeat(entity, type);
+            Heartbeat heartbeat = new Heartbeat(entity, "file");
             heartbeat.project = ProjectName;
             heartbeat.language = "Unity";
             heartbeat.branch = GetBranchName(Application.dataPath);
