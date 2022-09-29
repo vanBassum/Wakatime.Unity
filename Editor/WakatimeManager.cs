@@ -46,7 +46,7 @@ namespace WakaTime
                 return;
             }
 
-            HeartbeatQueue = new();
+            HeartbeatQueue = new Queue<Heartbeat>();
             Client = new WakatimeApiClient(apiUri, apiKey);
 
             HeartbeatCollector = new HeartbeatCollector(logger, projectName);
