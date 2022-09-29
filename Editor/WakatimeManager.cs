@@ -46,7 +46,7 @@ namespace WakaTime
                 return;
             }
 
-            HeartbeatQueue = new();
+            HeartbeatQueue = new Queue<Heartbeat>();
             Client = new WakatimeApiClient(apiUri, apiKey);
 
             HeartbeatCollector = new HeartbeatCollector(logger, projectName);
@@ -121,7 +121,7 @@ namespace WakaTime
                 case HttpStatusCode.Created:
                     return true;
 
-                case HttpStatusCode.TooManyRequests:
+                case (HttpStatusCode)429:
                     SendTimer.Interval += 1000;             //Increase interval.
                     Logger.Log(Logger.Levels.Warning, $"Response error {response?.StatusCode.ToString() ?? "N/A"}. Too many requests send, increasing interval to: {SendTimer.Interval}");
                     return false;
