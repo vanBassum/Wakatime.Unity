@@ -19,6 +19,12 @@ namespace WakaTime
             set => EditorPrefs.SetString("WakaTime/APIKey", value);
         }
 
+        public static bool UseGIT
+        {
+            get => EditorPrefs.GetBool("WakaTime/UseGIT", true);
+            set => EditorPrefs.SetBool("WakaTime/UseGIT", value);
+        }
+
         public static string ProjectName
         {
             get => Application.productName;
@@ -29,6 +35,7 @@ namespace WakaTime
             get => (Logger.Levels)EditorPrefs.GetInt("WakaTime/LogLevel", (int)Logger.Levels.Notice);
             set => EditorPrefs.SetInt("WakaTime/LogLevel", (int)value);
         }
+
 
         public static string ApiUri => "https://api.wakatime.com/api/v1/";
 
