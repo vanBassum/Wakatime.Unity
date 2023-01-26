@@ -154,6 +154,8 @@ namespace WakaTime
 
         private string GetBranchName(string workingDir)
         {
+            if (!Settings.UseGIT)
+                return null;
             try
             {
                 ProcessStartInfo startInfo = new ProcessStartInfo("git"); //No .exe, I assume this work on linux and macos.
