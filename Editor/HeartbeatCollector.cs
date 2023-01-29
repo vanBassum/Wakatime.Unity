@@ -154,33 +154,25 @@ namespace WakaTime
 
         private string GetBranchName(string workingDir)
         {
-            if (!Settings.UseGIT)
-                return null;
+            string gitDir = workingDir, lstDir = "", headFile;
+            do
+            {
+                if (lstDir == gitDir)
+                {
+                    Logger.Log(Logger.Levels.Warning, "Couln't determine branchname, git is not initialized.");
+                    return null;
+                }
+                lstDir = gitDir;
+                headFile = Path.Combine(gitDir, ".git", "HEAD");
+                gitDir = Path.GetFullPath(Path.Combine(gitDir, ".."));
+            } while (!File.Exists(headFile));
             try
             {
-                ProcessStartInfo startInfo = new ProcessStartInfo("git"); //No .exe, I assume this work on linux and macos.
-
-                startInfo.UseShellExecute = false;
-                startInfo.WorkingDirectory = workingDir;
-                startInfo.WindowStyle = ProcessWindowStyle.Hidden;
-                startInfo.CreateNoWindow = true;
-                startInfo.RedirectStandardInput = true;
-                startInfo.RedirectStandardOutput = true;
-                startInfo.Arguments = "rev-parse --abbrev-ref HEAD";
-
-                using Process process = new Process();
-                process.StartInfo = startInfo;
-                process.Start();
-
-                string branchname = process.StandardOutput.ReadLine();
-                process.Kill();
-                return branchname;
+                return File.ReadAllText(headFile).Split('/')[^1];
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                //Todo, figure out if git exists on this machine.
-                //Also, figure out if this is even a git repo.
-                Logger.Log(Logger.Levels.Warning, "Couln't determine branchname, is git installed?");
+                Logger.Log(Logger.Levels.Warning, $"Couln't determine branchname, check if there is problem with file '{headFile}'.");
             }
             return null;
         }
