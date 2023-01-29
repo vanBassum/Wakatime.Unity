@@ -163,6 +163,7 @@ namespace WakaTime
                 startInfo.UseShellExecute = false;
                 startInfo.WorkingDirectory = workingDir;
                 startInfo.WindowStyle = ProcessWindowStyle.Hidden;
+                startInfo.CreateNoWindow = true;
                 startInfo.RedirectStandardInput = true;
                 startInfo.RedirectStandardOutput = true;
                 startInfo.Arguments = "rev-parse --abbrev-ref HEAD";
