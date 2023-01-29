@@ -173,6 +173,7 @@ namespace WakaTime
                 process.Start();
 
                 string branchname = process.StandardOutput.ReadLine();
+                process.Kill();
                 return branchname;
             }
             catch(Exception ex)
