@@ -16,7 +16,7 @@ namespace WakaTime
         private Timer SendTimer { get; }
         private Queue<Heartbeat> HeartbeatQueue { get; }
         private HeartbeatCollector HeartbeatCollector { get; }
-        private WakatimeApiClient Client { get; }
+        private IWakatimeClient Client { get; }
         private Logger Logger { get; }
         public WakatimeManager(Logger logger, bool enabled, string projectName, string apiUri, string apiKey)
         {
