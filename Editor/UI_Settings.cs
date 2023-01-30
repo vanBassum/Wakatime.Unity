@@ -10,7 +10,7 @@ namespace WakaTime
         bool enabled;
         string apiKey;
         string projectName;
-        bool useGit;
+        GitOptions gitOptions;
         Logger.Levels logLevel;
 
         [MenuItem("Services/vanbassum/WakaTime")]
@@ -27,7 +27,7 @@ namespace WakaTime
             apiKey = Settings.ApiKey;
             projectName = Settings.ProjectName;
             logLevel = Settings.LogLevel;
-            useGit = Settings.UseGIT;
+            gitOptions = Settings.GitOptions;
         }
 
 
@@ -43,7 +43,7 @@ namespace WakaTime
                 Application.OpenURL("https://wakatime.com/api-key");
             EditorGUILayout.EndHorizontal();
 
-            useGit = EditorGUILayout.Toggle("Use GIT", useGit);
+            gitOptions = (GitOptions)EditorGUILayout.EnumPopup("Git options", gitOptions);
 
             if (GUILayout.Button("Open dashboard"))
                 Application.OpenURL("https://wakatime.com/dashboard");
@@ -59,7 +59,7 @@ namespace WakaTime
                 Settings.Enabled = enabled;
                 Settings.ApiKey = apiKey;
                 Settings.LogLevel = logLevel;
-                Settings.UseGIT = useGit;
+                Settings.GitOptions = gitOptions;
                 //Settings.ProjectName = projectName;
                 Plugin.Initialize();
                 this.Close();

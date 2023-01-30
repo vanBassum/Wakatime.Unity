@@ -19,10 +19,10 @@ namespace WakaTime
             set => EditorPrefs.SetString("WakaTime/APIKey", value);
         }
 
-        public static bool UseGIT
+        public static GitOptions GitOptions
         {
-            get => EditorPrefs.GetBool("WakaTime/UseGIT", true);
-            set => EditorPrefs.SetBool("WakaTime/UseGIT", value);
+            get => (GitOptions)EditorPrefs.GetInt("WakaTime/GitOptions", (int)GitOptions.FileIO);
+            set => EditorPrefs.SetInt("WakaTime/GitOptions", (int)value);
         }
 
         public static string ProjectName
