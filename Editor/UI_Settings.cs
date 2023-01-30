@@ -10,6 +10,7 @@ namespace WakaTime
         bool enabled;
         string apiKey;
         string projectName;
+        ClientOptions clientOptions;
         GitOptions gitOptions;
         Logger.Levels logLevel;
 
@@ -44,6 +45,7 @@ namespace WakaTime
             EditorGUILayout.EndHorizontal();
 
             gitOptions = (GitOptions)EditorGUILayout.EnumPopup("Git options", gitOptions);
+            clientOptions = (ClientOptions)EditorGUILayout.EnumPopup("Client options", clientOptions);
 
             if (GUILayout.Button("Open dashboard"))
                 Application.OpenURL("https://wakatime.com/dashboard");

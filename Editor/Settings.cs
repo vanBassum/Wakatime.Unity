@@ -25,6 +25,14 @@ namespace WakaTime
             set => EditorPrefs.SetInt("WakaTime/GitOptions", (int)value);
         }
 
+        public static ClientOptions ClientOptions
+        {
+            get => (ClientOptions)EditorPrefs.GetInt("WakaTime/ClientOptions", (int)ClientOptions.WakatimeAPIClient);
+            set => EditorPrefs.SetInt("WakaTime/ClientOptions", (int)value);
+        }
+
+        
+
         public static string ProjectName
         {
             get => Application.productName;

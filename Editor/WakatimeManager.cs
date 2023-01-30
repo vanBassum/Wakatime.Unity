@@ -47,7 +47,18 @@ namespace WakaTime
             }
 
             HeartbeatQueue = new Queue<Heartbeat>();
-            Client = new WakatimeApiClient(apiUri, apiKey);
+
+            switch (Settings.ClientOptions)
+            {
+                case ClientOptions.WakatimeCLIClient:
+                    Client = new WakatimeCliClient(apiUri, apiKey);
+                    break;
+                case ClientOptions.WakatimeAPIClient:
+                default:
+                    Client = new WakatimeApiClient(apiUri, apiKey);
+                    break;
+            }
+
 
             HeartbeatCollector = new HeartbeatCollector(logger, projectName);
             HeartbeatCollector.OnHeartbeat += (sender, e) => AddToQueue(e); 

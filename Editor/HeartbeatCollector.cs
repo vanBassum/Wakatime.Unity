@@ -161,7 +161,9 @@ namespace WakaTime
                     return GetBranchNameCLI(workingDir);
                 case GitOptions.FileIO:
                     return GetBranchNameFileIO(workingDir);
-                default: return null;
+                case GitOptions.Disabled:
+                default: 
+                    return null;
             }
         }
 
