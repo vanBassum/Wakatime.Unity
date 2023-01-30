@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Timers;
 using UnityEditor;
 using UnityEditor.SceneManagement;
@@ -154,6 +155,9 @@ namespace WakaTime
 
         private string GetBranchName(string workingDir)
         {
+            if (!Settings.UseGIT)
+                return null;
+
             string gitDir = workingDir, lstDir = "", headFile;
             do
             {
