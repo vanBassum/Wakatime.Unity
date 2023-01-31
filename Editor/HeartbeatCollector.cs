@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Timers;
 using UnityEditor;
 using UnityEditor.SceneManagement;
@@ -21,7 +22,7 @@ namespace WakaTime
         private Logger Logger { get; }
 
         Dictionary<string, DateTime> heartbeatHistory = new Dictionary<string, DateTime>();
-        
+
 
         public HeartbeatCollector(Logger logger, string projectName)
         {
@@ -76,7 +77,7 @@ namespace WakaTime
         private void EditorApplication_contextualPropertyMenu(GenericMenu menu, SerializedProperty property)
         {
             var entity = GetEntity();
-            if(CheckEntityTimeout(entity))
+            if (CheckEntityTimeout(entity))
             {
                 var heartbeat = CreateHeartbeat(entity);
                 ThrowHeartbeat(heartbeat);
@@ -155,7 +156,7 @@ namespace WakaTime
 
         private string GetBranchName(string workingDir)
         {
-            switch(Settings.GitOptions)
+            switch (Settings.GitOptions)
             {
                 case GitOptions.GitCLI:
                     return GetBranchNameCLI(workingDir);
@@ -183,6 +184,35 @@ namespace WakaTime
             } while (!File.Exists(headFile));
             try
             {
+                string headData = File.ReadAllText(headFile);
+                if (headData.StartsWith("ref: refs"))
+                {
+                    // Typically:
+                    // ref: refs/xxx/branchname, xxx can be 'for' or 'heads'
+                    int index, slash = 0;
+                    for (index = 0; slash < 2 && index < headData.Length; index++)
+                        if (headData[index] == '/')
+                            slash++;
+                    if (slash < 2)
+                    {
+                        // I'm not sure if there is a situation like this
+                        Logger.Log(Logger.Levels.Warning, "Unknown git HEAD, please report this problem:\n" + headData);
+                        return null;
+                    }
+                    return headData.Substring(index);
+                }
+                else if (headData.StartsWith("ref: "))
+                {
+                    // I'm not sure if there is a situation like this
+                    Logger.Log(Logger.Levels.Warning, "Unknown git HEAD, please report this problem:\n" + headData);
+                    return null;
+                }
+                else
+                {
+                    // plain commit id, the HEAD is detached
+                    Logger.Log(Logger.Levels.Warning, "Couln't determine branchname, the git HEAD is in a detached state.");
+                    return null;
+                }
                 return File.ReadAllText(headFile).Split('/')[^1];
             }
             catch (Exception ex)
