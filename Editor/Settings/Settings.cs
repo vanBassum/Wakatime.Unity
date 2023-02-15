@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Wakatime
 {
-    public class Settings : IDisposable
+    public class Settings : IDisposable, ICloneable
     {
         [Setting("WakaTime/Enabled")]
         public bool Enabled { get; set; } = false;
@@ -31,6 +31,11 @@ namespace Wakatime
 
         public void Dispose()
         {
+        }
+
+        public object Clone()
+        {
+            return this.MemberwiseClone();
         }
     }
 }

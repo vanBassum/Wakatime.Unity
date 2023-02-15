@@ -16,27 +16,13 @@ namespace Wakatime
     public class HeartbeatCollector : IHeartbeatCollector
     {
         public event EventHandler<Heartbeat> OnHeartbeat;
-        private string ProjectName { get; }
         private Logger Logger { get; }
-        private IGitClient? GitClient { get; }
-
-
-        private Logger Logger { get; set; }
+        private IGitClient GitClient { get; }
         private Settings Settings { get; set; }
         public HeartbeatCollector(Logger logger, Settings settings)
         {
             Logger = logger;
             Settings = settings;
-        }
-
-
-
-
-        public HeartbeatCollector(Logger logger, string projectName)
-        {
-            Logger = logger;
-            ProjectName = projectName;
-
             switch (Settings.GitOptions)
             {
                 case GitClientTypes.GitCLI:
@@ -139,7 +125,7 @@ namespace Wakatime
                 Entity = entity,
                 EntityType = EntityTypes.File,
                 Timestamp = DateTime.Now.ToUnixTimeFloat().ToString(),
-                Project = ProjectName,
+                Project = Settings.ProjectName,
                 BranchName = GitClient?.GetBranchName(workingDir)
             };
             return heartbeat;

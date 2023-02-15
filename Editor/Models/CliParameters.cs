@@ -1,6 +1,7 @@
 ﻿#if (UNITY_EDITOR)
 
 using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace Wakatime
 {

@@ -14,7 +14,7 @@ namespace Wakatime
             Logger = logger;
         }
 
-        private string GetBranchName(string workingDir)
+        public string GetBranchName(string workingDir)
         {
             try
             {
@@ -38,7 +38,7 @@ namespace Wakatime
             {
                 //Todo, figure out if git exists on this machine.
                 //Also, figure out if this is even a git repo.
-                Logger.Log(LogLevels.Warning, "Couln't determine branchname, is git installed?");
+                Logger.Log(LogLevels.Warning, $"Couln't determine branchname, is git installed?\n {ex.Message}");
             }
             return null;
         }

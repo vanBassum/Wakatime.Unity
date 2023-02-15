@@ -27,11 +27,15 @@ namespace Wakatime
             Dispose();
             try
             {
-                Logger = new Logger("Wakatime", Settings.LogLevel);
+                Logger = new Logger("Wakatime", LogLevels.Informational);
                 SettingsManager = new SettingsManager(Logger);
                 Settings = SettingsManager.LoadSettings();
-                Collector = new HeartbeatCollector(Logger, Settings);   //Only 1 type, no switch case required
 
+                if (!Settings.Enabled)
+                    return;
+
+                Logger.LogLevel = Settings.LogLevel;
+                Collector = new HeartbeatCollector(Logger, Settings);   //Only 1 type, no switch case required
                 switch (Settings.WakatimeHandlerType)
                 {
                     case WakatimeHandlerTypes.WakatimeCli:
@@ -40,7 +44,6 @@ namespace Wakatime
                 }
 
                 Collector.OnHeartbeat += (sender, e) => Handler.HandleHeartBeat(e);
-
                 Logger.Log(LogLevels.Notice, $"Plugin starting for project '{Settings.ProjectName}'");
             }
             catch(Exception ex)

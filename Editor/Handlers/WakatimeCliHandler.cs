@@ -12,6 +12,15 @@ namespace Wakatime
             Logger= logger;
             Settings= settings;
         }
+
+        public void HandleHeartBeat(Heartbeat heartbeat)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public void Dispose()
+        {
+        }
     }
 }
 

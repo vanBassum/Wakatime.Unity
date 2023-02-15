@@ -60,11 +60,10 @@ namespace Wakatime
                     Logger.Log(LogLevels.Warning, "Couln't determine branchname, the git HEAD is in a detached state.");
                     return null;
                 }
-                return File.ReadAllText(headFile).Split('/')[^1];
             }
             catch (Exception ex)
             {
-                Logger.Log(LogLevels.Warning, $"Couln't determine branchname, check if there is problem with file '{headFile}'.");
+                Logger.Log(LogLevels.Warning, $"Couln't determine branchname, check if there is problem with file '{headFile}'.\n{ex.Message}");
             }
             return null;
         }

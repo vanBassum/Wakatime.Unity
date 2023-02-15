@@ -7,68 +7,54 @@ namespace Wakatime
 {
     public class SettingsWindow : EditorWindow
     {
-        bool enabled;
-        string apiKey;
-        string projectName;
-        ClientTypes clientOptions;
-        GitClientTypes gitOptions;
-        LogLevels logLevel;
-
+        static Settings settings;
         [MenuItem("Services/vanbassum/WakaTime")]
         static void Init()
         {
             SettingsWindow window = (SettingsWindow)GetWindow(typeof(SettingsWindow), false, "Wakatime settings");
-            window.LoadSettings();
+            if (Plugin.Settings == null)
+                Plugin.Initialize();
+            settings = (Settings)Plugin.Settings.Clone();
             window.Show();
-        }
-
-        public void LoadSettings()
-        {
-            enabled = Settings.Enabled;
-            apiKey = Settings.ApiKey;
-            projectName = Settings.ProjectName;
-            logLevel = Settings.LogLevel;
-            gitOptions = Settings.GitOptions;
         }
 
 
         void OnGUI()
         {
-            enabled = EditorGUILayout.Toggle("Enable WakaTime", enabled);
-            //projectName = EditorGUILayout.TextField("Project name", projectName);
-            logLevel = (LogLevels)EditorGUILayout.EnumPopup("Log level", logLevel);
-
-            EditorGUILayout.BeginHorizontal();
-            apiKey = EditorGUILayout.TextField("API key", apiKey);
-            if (GUILayout.Button("Get key"))
-                Application.OpenURL("https://wakatime.com/api-key");
-            EditorGUILayout.EndHorizontal();
-
-            gitOptions = (GitClientTypes)EditorGUILayout.EnumPopup("Git options", gitOptions);
-            clientOptions = (ClientTypes)EditorGUILayout.EnumPopup("Client options", clientOptions);
-
-            if (GUILayout.Button("Open dashboard"))
-                Application.OpenURL("https://wakatime.com/dashboard");
-
-            
-            EditorGUILayout.BeginHorizontal();
-            bool save = GUILayout.Button("Save preferences");
-            bool cancel = GUILayout.Button("Cancel");
-            EditorGUILayout.EndHorizontal();
-
-            if (save)
+            if(settings != null)
             {
-                Settings.Enabled = enabled;
-                Settings.ApiKey = apiKey;
-                Settings.LogLevel = logLevel;
-                Settings.GitOptions = gitOptions;
-                //Settings.ProjectName = projectName;
-                Plugin.Initialize();
-                this.Close();
-            }
-            if (cancel)
-            { 
-                this.Close();
+                settings.Enabled = EditorGUILayout.Toggle("Enable WakaTime", settings.Enabled);
+                //projectName = EditorGUILayout.TextField("Project name", projectName);
+                settings.LogLevel = (LogLevels)EditorGUILayout.EnumPopup("Log level", settings.LogLevel);
+
+                EditorGUILayout.BeginHorizontal();
+                settings.ApiKey = EditorGUILayout.TextField("API key", settings.ApiKey);
+                if (GUILayout.Button("Get key"))
+                    Application.OpenURL("https://wakatime.com/api-key");
+                EditorGUILayout.EndHorizontal();
+
+                settings.GitOptions = (GitClientTypes)EditorGUILayout.EnumPopup("Git options", settings.GitOptions);
+                //settings.ClientOptions = (ClientTypes)EditorGUILayout.EnumPopup("Client options", settings.ClientOptions);
+
+                if (GUILayout.Button("Open dashboard"))
+                    Application.OpenURL("https://wakatime.com/dashboard");
+
+
+                EditorGUILayout.BeginHorizontal();
+                bool save = GUILayout.Button("Save preferences");
+                bool cancel = GUILayout.Button("Cancel");
+                EditorGUILayout.EndHorizontal();
+
+                if (save)
+                {
+                    Plugin.SettingsManager.SaveSettings(settings);
+                    Plugin.Initialize();
+                    this.Close();
+                }
+                if (cancel)
+                {
+                    this.Close();
+                }
             }
         }
     }

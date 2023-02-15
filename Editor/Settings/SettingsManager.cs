@@ -3,6 +3,7 @@ using System;
 using System.Linq;
 using System.Reflection;
 using UnityEditor;
+using UnityEngine;
 
 namespace Wakatime
 {
@@ -14,13 +15,12 @@ namespace Wakatime
             Logger= logger;
         }
 
-
         SettingHandler[] handlers = new SettingHandler[] {
             new SettingHandler(typeof(string), LoadString, SaveString),
             new SettingHandler(typeof(int), LoadInt, SaveInt),
+            new SettingHandler(typeof(Enum), LoadEnum, SaveEnum),
+            new SettingHandler(typeof(bool), LoadBool, SaveBool),
         };
-
-
 
         public Settings LoadSettings()
         {
@@ -31,6 +31,7 @@ namespace Wakatime
                 if (property.GetCustomAttribute<SettingAttribute>() is SettingAttribute attribute)
                 {
                     SettingHandler handler = handlers.FirstOrDefault(h => h.Type == property.PropertyType);
+                    handler ??= handlers.FirstOrDefault(h => h.Type == property.PropertyType.BaseType);
                     if (handler != null)
                     {
                         handler.Load(property, result, attribute.Key);
@@ -52,6 +53,7 @@ namespace Wakatime
                 if (property.GetCustomAttribute<SettingAttribute>() is SettingAttribute attribute)
                 {
                     SettingHandler handler = handlers.FirstOrDefault(h => h.Type == property.PropertyType);
+                    handler ??= handlers.FirstOrDefault(h => h.Type == property.PropertyType.BaseType);
                     if (handler != null)
                     {
                         handler.Save(property, settings, attribute.Key);
@@ -65,13 +67,14 @@ namespace Wakatime
         }
 
 
-
-
-
         static void LoadString(PropertyInfo property, object obj, string key) => property.SetValue(obj, EditorPrefs.GetString(key));
-        static void SaveString(PropertyInfo property, object obj, string key) => EditorPrefs.SetString(key, (string)property.GetValue(key));
+        static void SaveString(PropertyInfo property, object obj, string key) => EditorPrefs.SetString(key, (string)property.GetValue(obj));
         static void LoadInt(PropertyInfo property, object obj, string key) => property.SetValue(obj, EditorPrefs.GetString(key));
-        static void SaveInt(PropertyInfo property, object obj, string key) => EditorPrefs.SetInt(key, (int)property.GetValue(key));
+        static void SaveInt(PropertyInfo property, object obj, string key) => EditorPrefs.SetInt(key, (int)property.GetValue(obj));
+        static void LoadEnum(PropertyInfo property, object obj, string key) => property.SetValue(obj, EditorPrefs.GetInt(key));
+        static void SaveEnum(PropertyInfo property, object obj, string key) => EditorPrefs.SetInt(key, (int)property.GetValue(obj));
+        static void LoadBool(PropertyInfo property, object obj, string key) => property.SetValue(obj, EditorPrefs.GetBool(key));
+        static void SaveBool(PropertyInfo property, object obj, string key) => EditorPrefs.SetBool(key, (bool)property.GetValue(obj));
 
         public void Dispose()
         {
