@@ -26,7 +26,7 @@ namespace Wakatime
         /// <summary>
         /// Serializes a collection of Heartbeat to JSON
         /// </summary>
-        public static string SerializeArrayHeartbeat(List<Heartbeat> instance)
+        public static string SerializeArrayHeartbeat(Collection<Heartbeat> instance)
         {
             var heartbeats = string.Join(",", instance);
             return $"[{heartbeats}]";

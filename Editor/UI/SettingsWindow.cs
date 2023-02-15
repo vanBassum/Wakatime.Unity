@@ -1,4 +1,5 @@
 ﻿#if (UNITY_EDITOR)
+using System.IO;
 using UnityEditor;
 using UnityEditor.PackageManager;
 using UnityEngine;
@@ -24,8 +25,14 @@ namespace Wakatime
             if(settings != null)
             {
                 settings.Enabled = EditorGUILayout.Toggle("Enable WakaTime", settings.Enabled);
-                //projectName = EditorGUILayout.TextField("Project name", projectName);
                 settings.LogLevel = (LogLevels)EditorGUILayout.EnumPopup("Log level", settings.LogLevel);
+                settings.GitOptions = (GitClientTypes)EditorGUILayout.EnumPopup("Git options", settings.GitOptions);
+
+                GUIStyle style = new GUIStyle(EditorStyles.textField);
+                if (!File.Exists(settings.WakatimeCliBinary))
+                    style.normal.textColor = Color.red;
+
+                settings.WakatimeCliBinary = EditorGUILayout.TextField("Wakatime CLI", settings.WakatimeCliBinary, style);
 
                 EditorGUILayout.BeginHorizontal();
                 settings.ApiKey = EditorGUILayout.TextField("API key", settings.ApiKey);
@@ -33,7 +40,7 @@ namespace Wakatime
                     Application.OpenURL("https://wakatime.com/api-key");
                 EditorGUILayout.EndHorizontal();
 
-                settings.GitOptions = (GitClientTypes)EditorGUILayout.EnumPopup("Git options", settings.GitOptions);
+                
                 //settings.ClientOptions = (ClientTypes)EditorGUILayout.EnumPopup("Client options", settings.ClientOptions);
 
                 if (GUILayout.Button("Open dashboard"))
