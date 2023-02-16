@@ -115,6 +115,8 @@ namespace Wakatime
         {
             var entity = GetEntity();
             var heartbeat = CreateHeartbeat(entity);
+            if (obj == PlayModeStateChange.EnteredPlayMode)
+                heartbeat.Category = HeartbeatCategories.Debugging;
             ThrowHeartbeat(heartbeat);
         }
 
@@ -128,7 +130,8 @@ namespace Wakatime
                 Timestamp = DateTime.Now.ToUnixTimeFloat().ToString(),
                 Project = Settings.ProjectName,
                 BranchName = GitClient?.GetBranchName(workingDir),
-				IsWrite = false
+				IsWrite = false,
+                Category = Application.isPlaying ? HeartbeatCategories.Debugging : HeartbeatCategories.Coding,
             };
             return heartbeat;
         }

@@ -4,6 +4,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.ObjectModel;
 using System.Timers;
+using UnityEditor.SearchService;
 
 namespace Wakatime
 {
@@ -16,6 +17,8 @@ namespace Wakatime
         private readonly Timer _timer;
         public readonly ConcurrentQueue<Heartbeat> HeartbeatQueue;
         private readonly CliParameters _cliParameters;
+        private string _lastFile;
+        private DateTime _lastHeartbeat;
 
         public WakatimeCliHandler(Logger logger, Settings settings)
         {
@@ -34,8 +37,27 @@ namespace Wakatime
             _timer.Start();
         }
 
+
+
+        private bool EnoughTimePassed(DateTime now)
+        {
+            return now > _lastHeartbeat + Settings.HeartbeatFrequency;
+        }
+
         public void HandleHeartBeat(Heartbeat heartbeat)
         {
+            var currentFile = heartbeat.Entity;
+            if (currentFile == null)
+                return;
+
+            var now = DateTime.UtcNow;
+
+            if (!heartbeat.IsWrite && _lastFile != null && !EnoughTimePassed(now) && currentFile.Equals(_lastFile))
+                return;
+
+            _lastFile = currentFile;
+            _lastHeartbeat = now;
+
             HeartbeatQueue.Enqueue(heartbeat);
         }
 
