@@ -8,7 +8,7 @@ A [WakaTime](https://wakatime.com/) plugin for [Unity](https://unity.com/).
 I've tried this existing solution (https://github.com/vladfaust/unity-wakatime) but soon found some problems with this repo. I've tried to fix those problems and create PR's, but failed. So I took it upon myself to create something new. Where possible, I used the same settings as the repo from vladfaust. So your settings will work in this plugin.
 
 ## Getting started
-Open your unity project and navigate to Window -> Package Manager. Click on the little + sign and choose "add package from GIT url". Enter the following url: "https://github.com/vanBassum/Wakatime.Unity.git" After installation a new menu button will be added under Window -> vanbassum -> Wakatime. Enable wakatime and enter the api key, click save preferences and enjoy working with this plugin.
+Open your unity project and navigate to Window -> Package Manager. Click on the little + sign and choose "add package from GIT url". Enter the following url: "https://github.com/vanBassum/Wakatime.Unity.git" After installation a new menu button will be added under Services -> vanbassum -> Wakatime. Enable wakatime and enter the api key, click save preferences and enjoy working with this plugin.
 
 ## A list of things todo
 
