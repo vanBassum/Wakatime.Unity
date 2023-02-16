@@ -1,7 +1,7 @@
 {
   "name": "com.vanbassum.wakatime",
   "displayName": "WakaTime",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "unity": "2020.1",
   "description": "WakaTime plugin for Unity",
   "keywords": [
