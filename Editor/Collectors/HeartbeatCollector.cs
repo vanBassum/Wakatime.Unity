@@ -100,6 +100,7 @@ namespace Wakatime
         {
             var entity = GetEntity(scene);
             var heartbeat = CreateHeartbeat(entity);
+			heartbeat.IsWrite = true;
             ThrowHeartbeat(heartbeat);
         }
 
@@ -126,7 +127,8 @@ namespace Wakatime
                 EntityType = EntityTypes.File,
                 Timestamp = DateTime.Now.ToUnixTimeFloat().ToString(),
                 Project = Settings.ProjectName,
-                BranchName = GitClient?.GetBranchName(workingDir)
+                BranchName = GitClient?.GetBranchName(workingDir),
+				IsWrite = false
             };
             return heartbeat;
         }
