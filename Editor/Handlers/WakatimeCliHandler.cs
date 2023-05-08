@@ -5,6 +5,7 @@ using System.Collections.Concurrent;
 using System.Collections.ObjectModel;
 using System.Timers;
 using UnityEditor.SearchService;
+using UnityEngine;
 
 namespace Wakatime
 {
@@ -20,7 +21,7 @@ namespace Wakatime
         private string _lastFile;
         private DateTime _lastHeartbeat;
 
-        public WakatimeCliHandler(Logger logger, Settings settings)
+        public WakatimeCliHandler(Logger logger, Settings settings, PackageInfo packageInfo)
         {
             Logger= logger;
             Settings= settings;
@@ -29,7 +30,7 @@ namespace Wakatime
             _cliParameters = new CliParameters
             {
                 Key = settings.ApiKey,
-                //Plugin = $"{_metadata.EditorName}/{_metadata.EditorVersion} {_metadata.PluginName}/{_metadata.PluginVersion}"
+                Plugin = $"Unity/{Application.unityVersion} {packageInfo.Name}/{packageInfo.Version}"
             };
 
             _timer = new Timer(10000);

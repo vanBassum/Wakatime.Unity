@@ -1,5 +1,7 @@
 #if (UNITY_EDITOR)
+using Newtonsoft.Json;
 using System;
+using System.IO;
 using UnityEditor;
 using UnityEditor.Callbacks;
 using UnityEngine;
@@ -15,7 +17,7 @@ namespace Wakatime
         public static IWakatimeHandler Handler { get; set; }
         public static Settings Settings { get; set; }
         public static SettingsManager SettingsManager { get; set; }
-
+        public static PackageInfo PackageInfo { get; set; }
 
         static Plugin()
         {
@@ -27,6 +29,10 @@ namespace Wakatime
             Dispose();
             try
             {
+                PackageInfo = new PackageInfo();
+                PackageInfo.Name = "com.vanbassum.wakatime";
+                PackageInfo.Version = "0.2.0";
+
                 Logger = new Logger("Wakatime", LogLevels.Informational);
                 SettingsManager = new SettingsManager(Logger);
                 Settings = SettingsManager.LoadSettings();
@@ -39,7 +45,7 @@ namespace Wakatime
                 switch (Settings.WakatimeHandlerType)
                 {
                     case WakatimeHandlerTypes.WakatimeCli:
-                        Handler = new WakatimeCliHandler(Logger, Settings);
+                        Handler = new WakatimeCliHandler(Logger, Settings, PackageInfo);
                         break;
                 }
 
