@@ -66,6 +66,7 @@ namespace Wakatime
                     FileName = _program,
                     CreateNoWindow = true,
                     Arguments = _arguments,
+                    WindowStyle = ProcessWindowStyle.Hidden,
                 };
 
                 using (var process = Process.Start(procInfo))
