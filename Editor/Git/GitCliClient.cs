@@ -25,6 +25,7 @@ namespace Wakatime
                 startInfo.WindowStyle = ProcessWindowStyle.Hidden;
                 startInfo.RedirectStandardInput = true;
                 startInfo.RedirectStandardOutput = true;
+                startInfo.CreateNoWindow = true;
                 startInfo.Arguments = "rev-parse --abbrev-ref HEAD";
 
                 using Process process = new Process();
