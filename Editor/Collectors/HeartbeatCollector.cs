@@ -127,7 +127,7 @@ namespace Wakatime
             {
                 Entity = entity,
                 EntityType = EntityTypes.File,
-                Timestamp = DateTime.Now.ToUnixTimeFloat().ToString(),
+                Timestamp = DateTime.Now.ToUnixTimeFloat().ToString(CultureInfo.InvariantCulture),
                 Project = Settings.ProjectName,
                 BranchName = GitClient?.GetBranchName(workingDir),
 				IsWrite = false,
