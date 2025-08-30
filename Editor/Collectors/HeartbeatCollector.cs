@@ -3,6 +3,8 @@
 using System;
 using System.Globalization;
 using System.IO;
+using System.Threading.Tasks;
+
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -72,67 +74,78 @@ namespace Wakatime
         private void EditorApplication_contextualPropertyMenu(GenericMenu menu, SerializedProperty property)
         {
             var entity = GetEntity();
-            var heartbeat = CreateHeartbeat(entity);
-            ThrowHeartbeat(heartbeat);
+            CreateAndThrowHeartbeat(entity);
         }
 
         private void EditorSceneManager_newSceneCreated(UnityEngine.SceneManagement.Scene scene, NewSceneSetup setup, NewSceneMode mode)
         {
             var entity = GetEntity(scene);
-            var heartbeat = CreateHeartbeat(entity);
-            ThrowHeartbeat(heartbeat);
+            CreateAndThrowHeartbeat(entity);
         }
 
         private void EditorSceneManager_sceneClosing(UnityEngine.SceneManagement.Scene scene, bool removingScene)
         {
             var entity = GetEntity(scene);
-            var heartbeat = CreateHeartbeat(entity);
-            ThrowHeartbeat(heartbeat);
+            CreateAndThrowHeartbeat(entity);
         }
 
         private void EditorSceneManager_sceneOpened(UnityEngine.SceneManagement.Scene scene, OpenSceneMode mode)
         {
             var entity = GetEntity(scene);
-            var heartbeat = CreateHeartbeat(entity);
-            ThrowHeartbeat(heartbeat);
+            CreateAndThrowHeartbeat(entity);
         }
 
         private void EditorSceneManager_sceneSaved(UnityEngine.SceneManagement.Scene scene)
         {
             var entity = GetEntity(scene);
-            var heartbeat = CreateHeartbeat(entity);
-			heartbeat.IsWrite = true;
-            ThrowHeartbeat(heartbeat);
+            CreateAndThrowHeartbeat(entity, heartbeat => heartbeat.IsWrite = true);
         }
 
         private void EditorApplication_hierarchyChanged()
         {
             var entity = GetEntity();
-            var heartbeat = CreateHeartbeat(entity);
-            ThrowHeartbeat(heartbeat);
+            CreateAndThrowHeartbeat(entity);
         }
 
         private void EditorApplication_playModeStateChanged(PlayModeStateChange obj)
         {
             var entity = GetEntity();
-            var heartbeat = CreateHeartbeat(entity);
-            if (obj == PlayModeStateChange.EnteredPlayMode)
-                heartbeat.Category = HeartbeatCategories.Debugging;
-            ThrowHeartbeat(heartbeat);
+            CreateAndThrowHeartbeat(entity, heartbeat =>
+            {
+                if (obj == PlayModeStateChange.EnteredPlayMode)
+                    heartbeat.Category = HeartbeatCategories.Debugging;
+            });
         }
 
-        private Heartbeat CreateHeartbeat(string entity)
+        private async void CreateAndThrowHeartbeat(string entity, Action<Heartbeat> processor = null)
         {
-            string workingDir = Path.GetDirectoryName(entity);
-            Heartbeat heartbeat = new Heartbeat
+            try
+            {
+                var heartbeat = await CreateHeartbeatAsync(entity).ConfigureAwait(false);
+                processor?.Invoke(heartbeat);
+                ThrowHeartbeat(heartbeat);
+            }
+            catch (Exception e)
+            {
+                Debug.LogError($"[WakaTime] Failed to create or throw heartbeat for entity {entity}, reason: {e.Message}");
+                Debug.LogException(e);
+            }
+        }
+
+        private async Task<Heartbeat> CreateHeartbeatAsync(string entity)
+        {
+            var isPlaying = Application.isPlaying;
+            var workingDir = Path.GetDirectoryName(entity);
+            var branchName = await (GitClient?.GetBranchNameAsync(workingDir) ?? new ValueTask<string>((string)null));
+            var heartbeat = new Heartbeat
             {
                 Entity = entity,
                 EntityType = EntityTypes.File,
                 Timestamp = DateTime.Now.ToUnixTimeFloat().ToString(CultureInfo.InvariantCulture),
                 Project = Settings.ProjectName,
-                BranchName = GitClient?.GetBranchName(workingDir),
+                BranchName = branchName,
 				IsWrite = false,
-                Category = Application.isPlaying ? HeartbeatCategories.Debugging : HeartbeatCategories.Coding,
+                Category = isPlaying ? HeartbeatCategories.Debugging : HeartbeatCategories.Coding,
             };
             return heartbeat;
         }

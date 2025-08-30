@@ -3,19 +3,38 @@
 
 using System.IO;
 using System;
+using System.Threading.Tasks;
 
 namespace Wakatime
 {
     public class GitFileIOClient : IGitClient
     {
+        private TaskCompletionSource<string> _getBranchNameTaskSource;
+        
         private Logger Logger { get; }
         public GitFileIOClient(Logger logger) 
         { 
             Logger  = logger;
         }
 
+        public ValueTask<string> GetBranchNameAsync(string path)
+        {
+            if (_getBranchNameTaskSource != null)
+                return new ValueTask<string>(_getBranchNameTaskSource.Task);
+            
+            _getBranchNameTaskSource = new TaskCompletionSource<string>();
+            var task = _getBranchNameTaskSource.Task;
 
-        public string GetBranchName(string workingDir)
+            Task.Run(async () =>
+            {
+                var result = await GetBranchNameAsyncInternal(path);
+                _getBranchNameTaskSource.SetResult(result);
+            });
+            return new ValueTask<string>(task);
+        }
+
+
+        private async Task<string> GetBranchNameAsyncInternal(string workingDir)
         {
             string gitDir = workingDir, lstDir = "", headFile;
             do
@@ -31,7 +50,7 @@ namespace Wakatime
             } while (!File.Exists(headFile));
             try
             {
-                string headData = File.ReadAllText(headFile);
+                string headData = await File.ReadAllTextAsync(headFile);
                 if (headData.StartsWith("ref: refs"))
                 {
                     // Typically:

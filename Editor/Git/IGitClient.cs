@@ -1,11 +1,13 @@
-﻿#if (UNITY_EDITOR)
+﻿using System.Threading.Tasks;
+
+#if (UNITY_EDITOR)
 
 
 namespace Wakatime
 {
     public interface IGitClient
     {
-        string GetBranchName(string path);
+        ValueTask<string> GetBranchNameAsync(string path);
     }
 }
 
